@@ -1,13 +1,13 @@
-using DatingApp.API.Models;
+using BaseBackend.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatingApp.API.Data
+namespace BaseBackend.API.Data
 {
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) {}
 
-        public DbSet<Value> Values { get; set; }
+        public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using DatingApp.API.Models;
+using BaseBackend.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatingApp.API.Data
+namespace BaseBackend.API.Data
 {
     public class AuthRepository : IAuthRepository
     {
@@ -46,6 +46,36 @@ namespace DatingApp.API.Data
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+            return user;
+        }
+
+        public async Task<User> CompleteRegister(User user, string password)
+        {
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            // var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
+            // // if (TryUpdateModel(userToUpdate, "", new string[] { "Title", "Credits", "DepartmentID" }))
+            // if (TryUpdateModel(userToUpdate, user))
+            //     {
+            //         try
+            //         {
+            //             await _context.SaveChangesAsync();
+
+            //             return user;
+            //         }
+            //         catch (RetryLimitExceededException /* dex */)
+            //         {
+            //             //Log the error (uncomment dex variable name and add a line here to write a log.
+            //             ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            //         }
+            //     }
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
