@@ -55,29 +55,25 @@ namespace BaseBackend.API.Data
 
         public async Task<User> CompleteRegister(User user, string password)
         {
-            byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt);
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
+            if (password != null)
+            {
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                userToUpdate.PasswordHash = passwordHash;
+                userToUpdate.PasswordSalt = passwordSalt;
+            }
+            userToUpdate.Username = user.Username;
+            userToUpdate.Company = user.Company;
+            userToUpdate.Telephone = user.Telephone;
+            userToUpdate.LastName = user.LastName;
+            userToUpdate.FirstName = user.FirstName;
+            userToUpdate.Address = user.Address;
+            userToUpdate.AboutMe = user.AboutMe;
 
-            // var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
-            // // if (TryUpdateModel(userToUpdate, "", new string[] { "Title", "Credits", "DepartmentID" }))
-            // if (TryUpdateModel(userToUpdate, user))
-            //     {
-            //         try
-            //         {
-            //             await _context.SaveChangesAsync();
-
-            //             return user;
-            //         }
-            //         catch (RetryLimitExceededException /* dex */)
-            //         {
-            //             //Log the error (uncomment dex variable name and add a line here to write a log.
-            //             ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-            //         }
-            //     }
-
-            await _context.Users.AddAsync(user);
+            await _context.Users.AddAsync(userToUpdate);
+            _context.Users.Update(userToUpdate);
+            // _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return user;
