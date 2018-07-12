@@ -73,7 +73,6 @@ namespace BaseBackend.API.Data
 
             await _context.Users.AddAsync(userToUpdate);
             _context.Users.Update(userToUpdate);
-            // _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return user;
